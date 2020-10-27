@@ -5,18 +5,29 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def home():
-    data = request.get_json(force=False)
+    # data = request.get_json(force=False)
+    # tag = data['tag']
+    
+    text = request.form.get('text', None)
+    
+    if not text:
+        return jsonify({
+            "success": False,
+            "error": "Missing parameter: text"
+        })
+        
+    params = text.split(' ')
     
     try:
-        tag = data['tag']
+        TAG = params[0]
     except:
         return jsonify({
             "success": False,
-            "error": "Missing parameter: tag"
+            "error": "Missing parameter: JOB or TAG"
         })
 
     headers = {
-        "User-agent": "zinc-awx-client",
+        "User-Agent": "zinc-awx-client",
         "Content-Type": "application/json",
         "Authorization": "Basic YWRtaW46YWs2NGNrOTQ="
     }
@@ -32,14 +43,19 @@ def home():
         })
         
     launch = requests.post(
-        url=f"http://34.123.174.145/api/v2/job_templates/{job_id}/launch",
+        url=f"http://34.123.174.145/api/v2/job_templates/{job_id}/launch/",
         headers=headers,
-        data={
+        json={
             "extra_vars": {
-                "tag": tag,
+                "tag": TAG,
             }
         },
     )
+    
+    return jsonify({
+        "response_type": "in_channel",
+        "text": f"Goto {TAG} command for JL2 received, will run shortly", 
+    })
     
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
