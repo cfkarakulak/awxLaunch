@@ -42,14 +42,16 @@ def home():
             "error": "Can't find job id for JL2 Goto"
         })
         
+    awx_data = {
+        "extra_vars": {
+            "tag": TAG
+        }
+    }    
+    
     launch = requests.post(
         url=f"http://34.123.174.145/api/v2/job_templates/{job_id}/launch/",
         headers=headers,
-        json={
-            "extra_vars": {
-                "tag": TAG,
-            }
-        },
+        json=awx_data,
     )
     
     return jsonify({
