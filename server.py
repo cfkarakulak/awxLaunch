@@ -52,7 +52,7 @@ def home():
     }    
     
     launch = requests.post(
-        url=f"{AWX}/api/v2/job_templates/{job_id}/launch/",
+        url=f"{URL}/api/v2/job_templates/{job_id}/launch/",
         headers=headers,
         json=awx_data,
     )
