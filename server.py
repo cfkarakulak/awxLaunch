@@ -3,11 +3,10 @@ import requests
 
 app = Flask(__name__)
 
+URL = "http://34.123.174.145"
+
 @app.route('/', methods=['POST'])
 def home():
-    # data = request.get_json(force=False)
-    # tag = data['tag']
-    
     text = request.form.get('text', None)
     
     if not text:
@@ -19,7 +18,8 @@ def home():
     params = text.split(' ')
     
     try:
-        TAG = params[0]
+        JOB = str(params[0])
+        TAG = str(params[1])
     except:
         return jsonify({
             "success": False,
@@ -29,17 +29,20 @@ def home():
     headers = {
         "User-Agent": "zinc-awx-client",
         "Content-Type": "application/json",
-        "Authorization": "Basic YWRtaW46YWs2NGNrOTQ="
+        "Authorization": "Basic YWRtaW46YWs2NGNrOTQ=" # dont store it like this on production
     }
 
-    templates = requests.get("http://34.123.174.145/api/v2/job_templates", headers=headers)
+    templates = requests.get(
+        url=f"{URL}/api/v2/job_templates",
+        headers=headers,
+    )
     
     try:
-        job_id = [x['id'] for x in templates.json()['results'] if x['name'] == 'JL2 Goto'][0]
+        job_id = [x['id'] for x in templates.json()['results'] if x['name'] == (JOB + 'Jump')][0]
     except:
         return jsonify({
             "success": False,
-            "error": "Can't find job id for JL2 Goto"
+            "error": f"Can't find job id for {JOB}Jump"
         })
         
     awx_data = {
@@ -49,14 +52,14 @@ def home():
     }    
     
     launch = requests.post(
-        url=f"http://34.123.174.145/api/v2/job_templates/{job_id}/launch/",
+        url=f"{AWX}/api/v2/job_templates/{job_id}/launch/",
         headers=headers,
         json=awx_data,
     )
     
     return jsonify({
         "response_type": "in_channel",
-        "text": f"Goto {TAG} command for JL2 received, will run shortly", 
+        "text": f"Goto {TAG} command for {JOB} received, will run shortly", 
     })
     
 if __name__ == "__main__":
