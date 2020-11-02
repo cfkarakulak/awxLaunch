@@ -38,7 +38,7 @@ def home():
     )
     
     try:
-        job_id = [x['id'] for x in templates.json()['results'] if x['name'] == (JOB + 'Jump')][0]
+        job_id = [x['id'] for x in templates.json()['results'] if x['name'] == (JOB + 'JumpToSpecificVersion')][0]
     except:
         return jsonify({
             "success": False,
