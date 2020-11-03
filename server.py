@@ -6,7 +6,7 @@ app = Flask(__name__)
 URL = "http://34.123.174.145"
 
 ALLOWED_CHANNELS = {
-    'jl-deploys': 'G01D6U7BWTW',
+    'jl-deploys': 'C01DG8SQN2K',
 }
 
 ALLOWED_USERS = {
